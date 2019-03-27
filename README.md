@@ -11,7 +11,7 @@ License
 
 Usage instructions
 ------------------
-
+```
   Usage: regln [-v] <link_key>  <target_key>
          regln  -d  <link_key>
 
@@ -19,7 +19,7 @@ Usage instructions
   <target_key> is an existing registry key being linked to
   -v = volatile, exist in memory only
   -d = delete link
-  
+```  
 
   Regln can either create or delete a registry link.
 
@@ -33,26 +33,34 @@ Usage instructions
 
   The application uses NT Namespace Paths by default, eg:
 
+```
   \Registry\Machine\Software\Microsoft
-  
+```
+
   However for compatibility and ease of use, a conversion function to translate
   to Win32 key names was implemented in the public release. From now on, you can
   simply use:
 
+```
   HKEY_LOCAL_MACHINE\Software\Microsoft
+```
 
   or:
 
+```
   HKLM\Software\Microsoft
+```
 
   Unfortunately the "virtual root keys" like HKEY_CURRENT_USER  and others are
   only Win32 addition and are not visible from the Native API and therefore
   it's not possible use them in REGLN. The only valid "root keys" are:
 
+```
   Win32                    Abbr       Namespace
   -----------------------------------------------------
   HKEY_LOCAL_MACHINE       HKLM       \Registry\Machine
   HKEY_USERS               HKUS       \Registry\User
+```
 
   Note: For compatibility with scripts and other utilities the root key name "HKU"
   was added as synonym of HKUS or HKEY_USERS.
@@ -73,7 +81,9 @@ Usage instructions
 
 Examples
 --------
+```
   regln -v HKLM\Software\TestInc  HKLM\Software\Microsoft
+```
 
   Will create a temporary link TestInc pointing to Microsoft. If you open Regedit
   or any other registry editor and go to HKLM->Software and then TestInc you will
@@ -82,37 +92,44 @@ Examples
   well. (Remember to refresh display by pressing F5 if you're using the system
   regedit.exe)
 
+```
   regln -d HKLM\Software\TestInc
+```
 
   Will remove the link...
 
   Now a more advanced example:
 
-  You can rename "HKLM\Software\Microsoft\Windows\CurrentVersion"
-  to "HKLM\Software\Microsoft\Windows\Version1"  and create creatie
+  You can rename `HKLM\Software\Microsoft\Windows\CurrentVersion`
+  to `HKLM\Software\Microsoft\Windows\Version1`  and create creatie
   a following link:
 
+```
   regln \Registry\Machine\Software\Microsoft\Windows\CurrentVersion 
         \Registry\Machine\Software\Microsoft\Windows\Version1
-
+```
 
   This will create a permanent link pointing from CurrentVersion to the existing
   key Version1. Now copy the whole tree recursively from Version1 to Version2 so
   that you'll have:
 
+```
   HKLM\Software\Microsoft\Windows:
 
       - CurrentVersion --LINK-->> Version1
       - Version1
       - Version2
+```
 
   Now, you change some variables in Version2 and try to re-link the key
   CurrentVersion to Version2 by executing:
 
+```
   regln -d \Registry\Machine\Software\Microsoft\Windows\CurrentVersion 
 
   regln \Registry\Machine\Software\Microsoft\Windows\CurrentVersion 
         \Registry\Machine\Software\Microsoft\Windows\Version2
+```
 
   As you can see, you can have several "sets of settings" for various purposes,
   and swap them around easily. It seems clear that the "CurrentVersion" key was
