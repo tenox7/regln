@@ -19,6 +19,8 @@ Credits:
     Antoni Sawicki <as@tenoware.com>
     Tomasz Nowak <tn@tenoware.com>
     Mark Russinovitch <mark@sysinternals.com>
+    
+    Special thaks to adder_2003@yahoo.com for recent code fixes
 
 License:
    
