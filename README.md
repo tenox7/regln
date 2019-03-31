@@ -175,4 +175,4 @@ Credits
     Tomasz Nowak <tn@tenoware.com>
     Mark Russinovitch <mark@sysinternals.com>
 
-
+    Special thanks to adder_2003@yahoo.com for recent code fixes
