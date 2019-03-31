@@ -89,6 +89,8 @@ NTSTATUS (__stdcall *NtClose)(
     HANDLE Handle
 );
 
+#define NT_SUCCESS(Status)            (((NTSTATUS)(Status)) >= 0)
+
 
 VOID
 Usage(
@@ -378,19 +380,23 @@ Arguments:
 
     Status=NtCreateKey(&NtKeyHandle, KEY_ALL_ACCESS, &NtObjAttr, 0,  NULL, REG_OPTION_NON_VOLATILE, &Disposition);
 
-    if(Status) 
+    if(!NT_SUCCESS(Status)) 
         ERRPT(0, L"Link deletion failed (NtCreateKey) [%08X]\n", Status);
+
+    DEBUG(L"NtCreateKey Succeeded");
 
     Status=NtDeleteKey(NtKeyHandle);
 
-    if(Status) {
+    if(!NT_SUCCESS(Status)) {
         NtClose(NtKeyHandle);
         ERRPT(0, L"Link deletion failed (NtDeleteKey) [%08X]\n", Status);
     }
 
+    DEBUG(L"NtDeleteKey Succeeded");
+
     Status=NtClose(NtKeyHandle);
 
-    if(Status)
+    if(!NT_SUCCESS(Status))
         ERRPT(0, L"NtClose failed. [%08X]\n", Status);
 
     DEBUG(L"Link Delete Succeeded");
@@ -444,19 +450,23 @@ Arguments:
     
     Status=NtCreateKey(&NtKeyHandle, KEY_ALL_ACCESS, &NtObjAttr, 0,  NULL, (Volatile) ? REG_OPTION_VOLATILE|REGLN_OPTION_CREATE_LINK : REG_OPTION_NON_VOLATILE|REGLN_OPTION_CREATE_LINK, &Disposition);
 
-    if(Status)
+    if(!NT_SUCCESS(Status))
         ERRPT(0, L"Unable to create registry key \"%s\" (NtCreateKey) [%08X]", LinkKeyName, Status);
+
+    DEBUG(L"NtCreateKey Succeeded");
 
     Status=NtSetValueKey(NtKeyHandle, &NtValueName, 0, REG_LINK, TargetKeyName, wcslen(TargetKeyName) * sizeof(WCHAR));
 
-    if(Status) {
+    if(!NT_SUCCESS(Status)) {
         NtClose(NtKeyHandle);
         ERRPT(0, L"Unable to set link value for [REG_LINK]%s=\"%s\" (NtSetValueKey) [%08X]", REGLN_LINK_VALUE_NAME, TargetKeyName, Status);
     }
 
+    DEBUG(L"NtSetValueKey Succeeded");
+
     Status=NtClose(NtKeyHandle);
 
-    if(Status)
+    if(!NT_SUCCESS(Status))
         ERRPT(0, L"NtClose failed. [%08X]\n", Status);
 
     DEBUG(L"Link Creation Succeeded");
