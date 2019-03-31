@@ -132,14 +132,13 @@ Routine Description:
 --*/
 {
     va_list valist;
-    WCHAR vaBuff[1024]={0};
 
     if(_wgetenv(L"REGLN_DEBUG")) {
+        wprintf(L"DEBUG: ");
         va_start(valist, msg);
-        _vsnwprintf(vaBuff, sizeof(vaBuff), msg, valist);
+        vwprintf(msg, valist);
         va_end(valist);
-
-        wprintf(L"DEBUG: %s\n", vaBuff);
+        putwchar(L'\n');
     }
 }
 
@@ -162,21 +161,20 @@ Routine Description:
 --*/
 {
     va_list valist;
-    WCHAR vaBuff[1024]={0};
-    WCHAR errBuff[1024]={0};
+    LPWSTR errBuff=NULL;
     DWORD err;
 
+    wprintf(L"ERROR: ");
+
     va_start(valist, msg);
-    _vsnwprintf(vaBuff, sizeof(vaBuff), msg, valist);
+    vwprintf(msg, valist);
     va_end(valist);
 
-    wprintf(L"ERROR: %s\n", vaBuff);
-
     err=GetLastError();
-
     if(err) {
-        FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), errBuff, sizeof(errBuff) , NULL );
-        wprintf(L"%08X : %s\n\n", err, errBuff);
+        FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_ALLOCATE_BUFFER, 
+            NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR) &errBuff, 64, NULL);
+        wprintf(L"%08X : %s", err, errBuff);
     }    
     
     wprintf(L"\n\n");
@@ -186,8 +184,6 @@ Routine Description:
 
     ExitProcess(1);
 }
-
-
 
 
 VOID
@@ -265,14 +261,10 @@ Routine Description:
     int argn;
 
     DEBUG(L"argc: %d", argc);
-
-    // parse all args
     for(argn=1; argn<argc; argn++) {
         DEBUG(L"argv[%d]: %s", argn, argv[argn]); 
-
         // this is an option
         if(argv[argn][0]==L'/' || argv[argn][0]==L'-') {
-
             if(argv[argn][1]) {
                 DEBUG(L"option, len=%d", wcslen(argv[argn])); 
                 switch(argv[argn][1]) {
@@ -296,69 +288,49 @@ Routine Description:
                 }
             }
             else Usage();
-
         }
 
         // this is a parameter
         else {
             DEBUG(L"parameter, len=%d", wcslen(argv[argn])); 
-
             if(wcslen(argv[argn])>5) {
-
                 if(!wcslen(args->SourceKey)) {
-
                     if(wcsnicmp(L"HK", argv[argn], 2)==0) 
-                        WinToNtPath(argv[argn], sizeof(args->SourceKey), args->SourceKey);
-                    
+                        WinToNtPath(argv[argn], sizeof(args->SourceKey)/sizeof(WCHAR), args->SourceKey);
                     else if(wcsnicmp(L"\\Registry\\", argv[argn], 10)==0)
-                        wcsncpy(args->SourceKey, argv[argn], sizeof(args->SourceKey));
-
+                        wcsncpy(args->SourceKey, argv[argn], sizeof(args->SourceKey)/sizeof(WCHAR));
                     else
                         ERRPT(1, L"Unknown Registry Root Key Format.");
-                    
-                    DEBUG(L"SourceKey set to \"%s\" [len=%d] [max=%d]", args->SourceKey, wcslen(args->SourceKey), sizeof(args->SourceKey));
-
+                    DEBUG(L"SourceKey set to \"%s\" [len=%d] [max=%d]", args->SourceKey, wcslen(args->SourceKey), sizeof(args->SourceKey)/sizeof(WCHAR));
                 }
                 else if(!wcslen(args->DestinationKey)) {
-
                     if(wcsnicmp(L"HK", argv[argn], 2)==0) 
-                        WinToNtPath(argv[argn], sizeof(args->DestinationKey), args->DestinationKey);
-                    
+                        WinToNtPath(argv[argn], sizeof(args->DestinationKey)/sizeof(WCHAR), args->DestinationKey);
                     else if(wcsnicmp(L"\\Registry\\", argv[argn], 10)==0)
-                        wcsncpy(args->DestinationKey, argv[argn], sizeof(args->DestinationKey));
-                    
+                        wcsncpy(args->DestinationKey, argv[argn], sizeof(args->DestinationKey)/sizeof(WCHAR));
                     else
                         ERRPT(1, L"Unknown Registry Root Key Format.");
-                    
-                    DEBUG(L"DestinationKey set to \"%s\" [len=%d] [max=%d]", args->DestinationKey, wcslen(args->DestinationKey), sizeof(args->DestinationKey));
-
+                    DEBUG(L"DestinationKey set to \"%s\" [len=%d] [max=%d]", args->DestinationKey, wcslen(args->DestinationKey), sizeof(args->DestinationKey)/sizeof(WCHAR));
                 }
                 else 
                     ERRPT(1, L"Too many parameters. Giving up.");
-                
             }
             else 
                 ERRPT(1, L"Parameter %d [%s] too short. Giving up.", argn, argv[argn]);
-            
         }
     }
 
 
     // check validity
     if(args->Delete) {
-
         if(!wcslen(args->SourceKey) || wcslen(args->DestinationKey)) 
             ERRPT(1, L"Delete requires one parameter.");
-
         if(args->Volatile) 
             ERRPT(1, L"Options -d, -v cannot be specified together.");
-
     }
     else {
-
         if(!wcslen(args->SourceKey) || !wcslen(args->DestinationKey)) 
             ERRPT(1, L"Two parameters required.");
-
     }
 
     if(args->Delete) 
@@ -524,6 +496,3 @@ Routine Description:
     
     return 0;
 };
-
-
-
