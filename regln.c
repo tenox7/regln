@@ -19,7 +19,7 @@ Credits:
     Antoni Sawicki <as@tenoware.com>
     Tomasz Nowak <tn@tenoware.com>
     Mark Russinovitch <mark@sysinternals.com>
-    
+        
     Special thaks to adder_2003@yahoo.com for recent code fixes
 
 License:
@@ -107,7 +107,7 @@ Routine Description:
 
 --*/
 {
-    wprintf(L"REGLN v2.2, Copyright (c) 1999 by Antoni Sawicki\n\n");
+    wprintf(L"REGLN v2.2a, Copyright (c) 1999 by Antoni Sawicki\n\n");
     wprintf(L"Usage: regln [-v] <link_key>  <target_key>\n");
     wprintf(L"       regln  -d  <link_key>\n\n");
     wprintf(L"Where: <link_key> is the new registry link key\n");
