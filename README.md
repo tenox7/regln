@@ -37,6 +37,9 @@ Usage instructions
   \Registry\Machine\Software\Microsoft
 ```
 
+  You can see and understand NT Namespace Paths by looking at 
+  `HKLM\SYSTEM\CurrentControlSet\Control\hivelist` key.
+
   However for compatibility and ease of use, a conversion function to translate
   to Win32 key names was implemented in the public release. From now on, you can
   simply use:
