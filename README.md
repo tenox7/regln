@@ -3,10 +3,9 @@ REGLN - Windows Rregistry Linking Utility, v2.2
 ===============================================
 Copyright (c) 1999, Antoni Sawicki
 
-
-License
--------
-  Apache 2.0
+Downloads
+---------
+See [Releases](https://github.com/tenox7/regln/releases)
 
 
 Usage instructions
@@ -171,6 +170,13 @@ Real life use of Registry Links
 
   More recently it was reported that Regln was used to solve a problem with daylight
   saving time and TZInfo over reboot of a EWF enabled device on Windows XP Embedded. 
+
+
+License
+-------
+  Apache 2.0
+
+
 
 Credits
 -------    
