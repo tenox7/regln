@@ -1,7 +1,8 @@
 
-REGLN - Windows Rregistry Linking Utility, v2.2
-===============================================
-Copyright (c) 1999, Antoni Sawicki
+REGLN - Windows Registry Linking Utility, v2.2
+==============================================
+
+Utility that allows to create and delete symbolic links in Windows Registry. 
 
 Downloads
 ---------
